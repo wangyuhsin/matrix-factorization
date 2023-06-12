@@ -47,22 +47,28 @@ df, num_users, num_movies = encode_data(df)
 
 3. Create initial user and item embeddings using the `create_embedings` function. 
 ```python
-K = 10  # Number of factors in the embedding
+K = 50  # Number of factors in the embedding
 emb_user = create_embedings(num_users, K)
 emb_movie = create_embedings(num_movies, K)
 ```
 
 4. Use the `gradient_descent` function to train the matrix factorization model on the training dataset. 
 ```python
-emb_user, emb_movie = gradient_descent(df, emb_user, emb_movie, iterations=100)
+emb_user, emb_movie = gradient_descent(df, emb_user, emb_movie, iterations=2000, learning_rate=1, df_val=None)
 ```
+
 5. Optionally, you can evaluate the model's performance on a validation dataset using the `cost` function.
 ```python
-df_val = pd.read_csv("ml-latest-small/ratings_val.csv")
+df_val = pd.read_csv("ratings_val.csv")
 df_val = encode_new_data(df_val, df)
 validation_cost = cost(df_val, emb_user, emb_movie)
 print("Validation cost:", validation_cost)
 ```
+Output:
+```
+Validation cost: 2.467201855162542
+```
+
 6. After training, you can make recommendations for users by computing the dot product of their user embeddings and item embeddings.
 ```python
 user_id = 42
@@ -72,6 +78,14 @@ predicted_ratings = np.dot(user_embedding, item_embeddings.T)
 top_movies = np.argsort(predicted_ratings)[-5:][::-1]
 for movie_id in top_movies:
     print("Movie ID:", movie_id)
+```
+Output:
+```
+Movie ID: 1395
+Movie ID: 2427
+Movie ID: 232
+Movie ID: 2158
+Movie ID: 28
 ```
 
 Please refer to the code in `mf.py` for more details on each function and their parameters. You can also find comments within the code that explain the purpose and functionality of each function.
